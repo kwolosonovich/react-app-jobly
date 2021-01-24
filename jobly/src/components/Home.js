@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Card, CardContent, CardHeader } from "@material-ui/core";
-import Main from "./Main"
+import Listing from "./Listing"
 
 
 function Home() {
@@ -14,8 +14,7 @@ return (
     <Card>
       <CardContent>
         <CardHeader />
-            Jobly
-            <Main />
+          Jobly
       </CardContent>
     </Card>
   </section>
