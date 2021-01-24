@@ -14,7 +14,7 @@ function NavBar() {
         </NavLink>
         <Nav className="link" navbar>
           <NavLink exact to="/jobs" className="navbar">
-            Jobly
+            Jobs
           </NavLink>
         </Nav>
         <Nav className="link" navbar>
