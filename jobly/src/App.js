@@ -1,66 +1,76 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { Route, Switch } from "react-router-dom";
-import './App.css';
-import Home from "./Home.js"
-import Navbar from "./Navbar"
+import './style/App.css';
+import Home from "./components/Home.js"
+import NavBar from "./NavBar"
+import ListingsContext from "./ListingsContext"
  
 
 function App() {
 
+  // job state
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    let jobs = ["job1, job2, job3"];
+    setJobs(jobs);
+  });
+
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar />
+        <ListingsContext.Provider value={{ jobs }} >
+        <NavBar />
         <main>
           <Route exact path="/">
             <Home />
           </Route>
-          <Route exact path="/jobs">
+          {/* <Route exact path="/jobs">
             <Jobs name="jobs" jobs={jobs} title="Jobs" />
-          </Route>
+          </Route> */}
           {/* <Route path="/jobs/:id">
                 <Jobs items={jobs} cantFind="/jobs" />
               </Route> */}
 
-          <Route exact path="/companies">
+          {/* <Route exact path="/companies">
             <Companies
               name="companies"
               companies={companies}
               title="Companies"
             />
-          </Route>
+          </Route> */}
           {/* <Route path="/companies/:id">
                 <Companies items={companies} cantFind="/companies" />
               </Route> */}
 
-          <Route exact path="/profile">
+          {/* <Route exact path="/profile">
             <Profile name="profile" profile={profile} title="Profile" />
-          </Route>
+          </Route> */}
           {/* <Route path="/profile/:id">
                 <Profile items={profile} cantFind="/profile" />
               </Route> */}
 
-          <Route exact path="/login">
+          {/* <Route exact path="/login">
             <Login name="login" login={login} title="Login" />
-          </Route>
+          </Route> */}
           {/* <Route path="/login/:id">
                 <Login items={login} cantFind="/login" />
               </Route> */}
 
-          <Route exact path="/logout">
+          {/* <Route exact path="/logout">
             <Logout name="logout" logout={logout} title="Logout" />
-          </Route>
+          </Route> */}
           {/* <Route path="/logout/:id">
                 <Logout items={logout} cantFind="/logout" />
               </Route> */}
-
+          {/* 
           <Route>
             <p>Sorry this page doesn't exist.</p>
-          </Route>
-        </main>
-        <Home />
+          </Route> */}
+          </main>
+        </ListingsContext.Provider>
       </BrowserRouter>
     </div>
   );
