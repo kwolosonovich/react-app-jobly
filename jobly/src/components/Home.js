@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Card, CardContent, CardHeader } from "@material-ui/core";
-import Listing from "./Listing"
+import Listing from "./JobListing"
 
 
 function Home() {
