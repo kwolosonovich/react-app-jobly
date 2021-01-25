@@ -7,8 +7,6 @@ import Listing from "./JobListing"
 function Home() {
 
 
-
-
 return (
   <section className="home">
     <Card>

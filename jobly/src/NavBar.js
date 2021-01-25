@@ -28,6 +28,11 @@ function NavBar() {
           </NavLink>
         </Nav>
         <Nav className="link" navbar>
+          <NavLink exact name="register" to="/register" className="navbar">
+            Register
+          </NavLink>
+        </Nav>
+        <Nav className="link" navbar>
           <NavLink exact name="login" to="/login" className="navbar">
             Login
           </NavLink>
