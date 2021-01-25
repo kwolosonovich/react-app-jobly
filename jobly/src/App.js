@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
-import { Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import './style/App.css';
 import Home from "./components/Home.js"
 import NavBar from "./NavBar"
@@ -15,9 +14,13 @@ function App() {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    let jobs = ["job1, job2, job3"];
-    setJobs(jobs);
-  });
+    console.log("************************* called ********************************")
+    function getJobs() {
+      let jobs = ["job1, job2, job3"];
+      setJobs(jobs);
+    }
+    getJobs()
+  }, []);
 
   return (
     <div className="App">

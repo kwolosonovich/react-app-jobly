@@ -13,27 +13,27 @@ function NavBar() {
           Jobly
         </NavLink>
         <Nav className="link" navbar>
-          <NavLink exact to="/jobs" className="navbar">
+          <NavLink exact name="jobs" to="/jobs" className="navbar">
             Jobs
           </NavLink>
         </Nav>
         <Nav className="link" navbar>
-          <NavLink exact to="/companies" className="navbar">
+          <NavLink exact name="companies" to="/companies" className="navbar">
             Companies
           </NavLink>
         </Nav>
         <Nav className="link" navbar>
-          <NavLink exact to="/profile" className="navbar">
+          <NavLink exact name="profile" to="/profile" className="navbar">
             Profile
           </NavLink>
         </Nav>
         <Nav className="link" navbar>
-          <NavLink exact to="/login" className="navbar">
+          <NavLink exact name="login" to="/login" className="navbar">
             Login
           </NavLink>
         </Nav>
         <Nav className="link" navbar>
-          <NavLink exact to="/logout" className="navbar">
+          <NavLink exact name="logout" to="/logout" className="navbar">
             Logout
           </NavLink>
         </Nav>
