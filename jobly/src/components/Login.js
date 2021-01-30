@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import ReactDOM from "react-dom";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { Container, Card, CardContent, CardHeader } from "@material-ui/core";
 import ListingsContext from "../ListingsContext";
 import { MDCTextFieldIcon } from "@material/textfield/icon";
@@ -34,8 +34,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Login() {
+function Login({ login }) {
   const classes = useStyles();
+
+  const history = useHistory();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+  const [formErrors, setFormErrors] = useState([]);
+
+  console.debug(
+    "LoginForm",
+    "login=",
+    typeof login,
+    "formData=",
+    formData,
+    "formErrors",
+    formErrors
+  );
+
+  async function handleSubmit(evt) {
+    evt.preventDefault();
+    let result = await login(formData);
+    if (result.success) {
+      history.push("/companies");
+    } else {
+      setFormErrors(result.errors);
+    }
+  }
+
+  function handleChange(evt) {
+    const { name, value } = evt.target;
+    setFormData((l) => ({ ...l, [name]: value }));
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -44,7 +76,7 @@ function Login() {
         <Typography component="h1" variant="h5">
           Login
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -54,6 +86,8 @@ function Login() {
                 id="username"
                 label="Username"
                 name="username"
+                value={formData.username}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -65,7 +99,8 @@ function Login() {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="current-password"
+                value={formData.password}
+                onChange={handleChange}
               />
             </Grid>
           </Grid>
@@ -75,6 +110,7 @@ function Login() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onSubmit={handleSubmit}
           >
             Login
           </Button>

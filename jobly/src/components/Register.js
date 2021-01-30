@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import ReactDOM from "react-dom";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { Container, Card, CardContent, CardHeader } from "@material-ui/core";
 import ListingsContext from "../ListingsContext";
 import { MDCTextFieldIcon } from "@material/textfield/icon";
@@ -35,8 +35,39 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Register() {
+function Register({ signup }) {
   const classes = useStyles();
+
+    const history = useHistory();
+    const [formData, setFormData] = useState({
+      username: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+    });
+    const [formErrors, setFormErrors] = useState([]);
+
+    async function handleSubmit(evt) {
+            console.log(
+              "********************************at handleChange**************************"
+            );
+
+      evt.preventDefault();
+      let result = await signup(formData);
+      if (result.success) {
+        history.push("/companies");
+      } else {
+        setFormErrors(result.errors);
+      }
+    }
+
+    /** Update form data field */
+    function handleChange(evt) {
+      const { name, value } = evt.target;
+      setFormData((data) => ({ ...data, [name]: value }));
+    }
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -55,6 +86,8 @@ function Register() {
                 id="username"
                 label="Username"
                 name="username"
+                value={formData.username}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -67,6 +100,8 @@ function Register() {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                value={formData.firstName}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -78,6 +113,8 @@ function Register() {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
+                value={formData.lastName}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -89,6 +126,8 @@ function Register() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                value={formData.email}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -100,7 +139,8 @@ function Register() {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="current-password"
+                value={formData.password}
+                onChange={handleChange}
               />
             </Grid>
           </Grid>
@@ -110,6 +150,7 @@ function Register() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onSubmit={handleSubmit}
           >
             Register
           </Button>

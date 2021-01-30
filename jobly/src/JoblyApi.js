@@ -25,8 +25,8 @@ class JoblyApi {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
       console.error("API Error:", err.response);
-      let message = err.response.data.error.message;
-      throw Array.isArray(message) ? message : [message];
+      // let message = err.response.data.error.message;
+      // throw Array.isArray(message) ? message : [message];
     }
   }
 
@@ -48,6 +48,11 @@ class JoblyApi {
   static async getCompanies() {
     let res = await this.request(`companies`);
     return res.company;
+  }
+
+  static async signup(data) {
+    let res = await this.request(`auth/register`, data, "post");
+    return res.token;
   }
 
   // obviously, you'll add a lot here ...
