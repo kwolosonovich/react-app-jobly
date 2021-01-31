@@ -6,7 +6,8 @@ import ListingsContext from "../ListingsContext";
 import { MDCTextFieldIcon } from "@material/textfield/icon";
 import { MDCTextField } from "@material/textfield";
 import JoblyApi from "../JoblyApi";
-import UserContext from "../UserContext";
+import UserContext from "../context/UserContext";
+
 
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -36,19 +37,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Profile() {
+function Profile({ item }) {
   const classes = useStyles();
+  
+  let dev = true
 
-   const { currentUser, setCurrentUser } = useContext(UserContext);
+  let getContext = useContext(UserContext);
+  let user = getContext[item];
+
+  // console.log(user)
+
+  //  const { user, setUser } = useContext(UserContext);
+   
    const [formData, setFormData] = useState({
-     firstName: currentUser.firstName,
-     lastName: currentUser.lastName,
-     email: currentUser.email,
-     username: currentUser.username,
+     firstName: user.firstName,
+     lastName: user.lastName,
+     email: user.email,
+     username: user.username,
      password: "",
    });
    const [formErrors, setFormErrors] = useState([]);
-
    // switch to use our fancy limited-time-display message hook
    const [saveConfirmed, setSaveConfirmed] = useState(false);
    // const [saveConfirmed, setSaveConfirmed] = useTimedMessage()
@@ -66,12 +74,14 @@ function Profile() {
      let username = formData.username;
      let updatedUser;
 
-     try {
-       updatedUser = await JoblyApi.saveProfile(username, profileData);
-     } catch (errors) {
-       debugger;
-       setFormErrors(errors);
-       return;
+     if (!dev) {
+      try {
+        updatedUser = await JoblyApi.saveProfile(username, profileData);
+      } catch (errors) {
+        debugger;
+        setFormErrors(errors);
+        return;
+      }
      }
 
      setFormData((f) => ({ ...f, password: "" }));
@@ -79,7 +89,7 @@ function Profile() {
      setSaveConfirmed(true);
 
      // trigger reloading of user information throughout the site
-     setCurrentUser(updatedUser);
+     setUser(updatedUser);
    }
 
    /** Handle form data changing */
@@ -107,7 +117,8 @@ function Profile() {
                 required
                 fullWidth
                 id="username"
-                // label="Username"
+                value={user.username}
+                label="Username"
                 name="username"
                 label={formData.username}
                 onChange={handleChange}
@@ -123,7 +134,7 @@ function Profile() {
                 id="firstName"
                 // label="First Name"
                 autoFocus
-                label={formData.firstName}
+                value={formData.firstName}
                 onChange={handleChange}
               />
             </Grid>
@@ -136,7 +147,7 @@ function Profile() {
                 // label="Last Name"
                 name="lastName"
                 autoComplete="lname"
-                label={formData.lastName}
+                value={formData.lastName}
                 onChange={handleChange}
               />
             </Grid>
@@ -149,7 +160,7 @@ function Profile() {
                 // label="Email Address"
                 name="email"
                 autoComplete="email"
-                label={formData.email}
+                value={formData.email}
                 onChange={handleChange}
               />
             </Grid>

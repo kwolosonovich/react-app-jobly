@@ -13,16 +13,13 @@ import Register from "./components/Register"
 import Login from "./components/Login"
 import Logout from "./components/Logout";
 import Profile from "./components/Profile"
-import UserContext from "./UserContext";
-import Jobs from "./components/Jobs"
-import JobList from "./components/JobList"
+import UserContext from "./context/UserContext";
 import JobListing from "./components/JobListing"
  
 
 function App() {
-
   // development state
-  const [dev, setDev] = useState(true)
+  const [dev, setDev] = useState(true);
   // job state
   const [jobs, setJobs] = useState([]);
   // company state
@@ -34,7 +31,7 @@ function App() {
   // user state
   const [user, setUser] = useState(null);
   // application id state
-  const [applicationIds, setApplicationIds] = useState(new Set([]));
+  const [applicationIds, setApplicationIds] = useState([]);
   // information received after request
   const [infoReceived, setInfoReceived] = useState(false);
 
@@ -71,6 +68,18 @@ function App() {
     getJobs();
   }, []);
 
+  /** Checks if a job has been applied for. */
+  function hasAppliedToJob(id) {
+    return applicationIds.has(id);
+  }
+
+  /** Apply to a job: make API call and update set of application IDs. */
+  function applyToJob(id) {
+    if (hasAppliedToJob(id)) return;
+    JoblyApi.applyToJob(user.username, id);
+    setApplicationIds(new Set([...applicationIds, id]));
+  }
+
   // get companies when list is empty
   useEffect(() => {
     if (dev) {
@@ -80,7 +89,8 @@ function App() {
             handle: "bauer-gallagher",
             name: "Bauer-Gallagher",
             num_employees: 862,
-            description: "Difficult ready trip question produce produce someone.",
+            description:
+              "Difficult ready trip question produce produce someone.",
             logo_url: "Logo1",
           },
           {
@@ -111,64 +121,59 @@ function App() {
   }, []);
 
   // update setUser, setActive, setToken upon login and logout
-    useEffect(
-      function loadUserInfo() {
-        console.debug("App useEffect loadUserInfo", "token=", token);
+  useEffect(
+    function loadUserInfo() {
+      console.debug("App useEffect loadUserInfo", "token=", token);
 
-        if (dev) {
-          function getUser() {
-            if (token) {
-              try {
-                setUser('testUser');
-                setApplicationIds(new Set(user.applications));
-              } catch (err) {
-                console.error("App loadUserInfo: problem loading", err);
-                setUser(null);
-              }
+      if (dev) {
+        function getUser() {
+          if (token) {
+            try {
+              setUser("testUser");
+              setApplicationIds(new Set(user.applications));
+            } catch (err) {
+              console.error("App loadUserInfo: problem loading", err);
+              setUser(null);
             }
-            setInfoReceived(true);
           }
-          setInfoReceived(false);
-          getUser();
-        
-        } else {
-          async function getUser() {
-            if (token) {
-              try {
-                let { username } = jwt.decode(token);
-                // put the token on the Api class so it can use it to call the API.
-                JoblyApi.token = token;
-                let user = await JoblyApi.getCurrentUser(username);
-                setUser(user);
-                setApplicationIds(new Set(user.applications));
-              } catch (err) {
-                console.error("App loadUserInfo: problem loading", err);
-                setUser(null);
-              }
-            }
-            setInfoReceived(true);
-          }
-
-        // set infoLoaded to false while async getCurrentUser runs; once the
-        // data is fetched (or even if an error happens!), this will be set back
-        // to false to control the spinner.
+          setInfoReceived(true);
+        }
         setInfoReceived(false);
         getUser();
+      } else {
+        async function getUser() {
+          if (token) {
+            try {
+              let { username } = jwt.decode(token);
+              // put the token on the Api class so it can use it to call the API.
+              JoblyApi.token = token;
+              let user = await JoblyApi.getCurrentUser(username);
+              setUser(user);
+              setApplicationIds(new Set(user.applications));
+            } catch (err) {
+              console.error("App loadUserInfo: problem loading", err);
+              setUser(null);
+            }
+          }
+          setInfoReceived(true);
         }
-      },
-      [token]
-    );
+        setInfoReceived(false);
+        getUser();
+      }
+    },
+    [token]
+  );
 
   // login returning user
   function login(loginData) {
     if (dev && loginData) {
       setToken("testToken");
-      setActive('true')
+      setActive("true");
       return { success: true };
     } else {
       async function login(loginData) {
         try {
-           let token = await JoblyApi.login(loginData);
+          let token = await JoblyApi.login(loginData);
           setToken(token);
           return { success: true };
         } catch (errors) {
@@ -180,15 +185,15 @@ function App() {
     }
   }
 
-  // register new user 
-  function register(registerData) {
-    if (dev && registerData) {
+  // register new user
+  function register(formData) {
+    if (dev && formData) {
       setToken("testToken");
       return { success: true };
     } else {
-      async function reg(registerData) {
+      async function reg(formData) {
         try {
-          let token = await JoblyApi.signup(registerData);
+          let token = await JoblyApi.signup(formData);
           setToken(token);
           return { success: true };
         } catch (errors) {
@@ -196,7 +201,7 @@ function App() {
           return { success: false, errors };
         }
       }
-      reg(registerData);
+      reg(formData);
     }
   }
 
@@ -209,101 +214,76 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <ListingsContext.Provider value={{ jobs, companies }}>
-          <NavBar />
-          <main>
-            <Switch>
-              <Route exact path="/">
-                <Home />
-              </Route>
+          <UserContext.Provider value={{ user, setUser }}>
+            <NavBar />
+            <main>
+              <Switch>
+                <Route exact path="/">
+                  <Home />
+                </Route>
+                <Route exact path="/jobs">
+                  <JobListing name="jobs" jobs={jobs} title="Jobs" />
+                </Route>
+                <Route path="/jobs/:id">
+                  <JobListing items={jobs} cantFind="/jobs" />
+                </Route>
+                <Route exact path="/companies">
+                  <CompanyListing
+                    name="companies"
+                    companies={companies}
+                    title="Companies"
+                  />
+                </Route>
+                <Route path="/companies/:id">
+                  <CompanyListing items={companies} cantFind="/companies" />
+                </Route>
 
-              <Route exact path="/jobs">
-                <JobListing name="jobs" jobs={jobs} title="Jobs" />
-              </Route>
-              <Route path="/jobs/:id">
-                <JobListing items={jobs} cantFind="/jobs" />
-              </Route>
-
-              <Route exact path="/companies">
-                <CompanyListing
-                  name="companies"
-                  companies={companies}
-                  title="Companies"
-                />
-              </Route>
-              <Route path="/companies/:id">
-                <CompanyListing items={companies} cantFind="/companies" />
-              </Route>
-
-              <Route exact path="/profile">
-                <Profile
-                  name="profile"
-                  // profile={profile}
-                  title="Profile"
-                />
-              </Route>
-              <Route path="/profile/:id">
-                <Profile
-                  // items={profile}
-                  cantFind="/profile"
-                />
-              </Route>
-
-              <Route exact path="/login">
-                <Login name="login" login={login} title="Login" />
-              </Route>
-              <Route path="/login/:id">
-                <Form items={login} login={login} cantFind="/login" />
-              </Route>
-
-              <Route exact path="/profile">
-                <Profile
-                  name="profile"
-                  // profile={profile}
-                  title="profile"
-                />
-              </Route>
-              <Route path="/profile">
-                <Profile
-                  // items={login}
-                  // profile={profile}
-                  cantFind="/profile"
-                />
-              </Route>
-
-              <Route exact path="/register">
-                <Register
-                  name="register"
-                  register={register}
-                  title="Register"
-                />
-              </Route>
-              <Route path="/register">
-                <Register
-                  items={login}
-                  register={register}
-                  cantFind="/register"
-                />
-              </Route>
-
-              <Route exact path="/logout">
-                <Logout
-                  name="logout"
-                  logout={logout}
-                  title="Logout"
-                />
-              </Route>
-              <Route path="/logout/:id">
-                <Logout
-                  items={logout}
-                  cantFind="/logout"
-                />
-              </Route>
-
-              <Route>
-                <p>Sorry this page doesn't exist.</p>
-              </Route>
-            </Switch>
-          </main>
+                <Route exact path="/login">
+                  <Login name="login" login={login} title="Login" />
+                </Route>
+              {!user &&             
+                <Route exact path="/logout">
+                  <Logout
+                    name="logout"
+                    logout={logout}
+                    title="Logout"
+                    cantFind="/"
+                  />
+                </Route>
+              }
+              {!user &&       
+                <Route exact path="/register">
+                  <Register
+                    name="register"
+                    register={register}
+                    title="Register"
+                  />
+                </Route> 
+              }
+              {user &&   
+                <Route exact path="/profile">
+                  <Profile
+                    name="profile"
+                    items={user}
+                    title="profile"
+                  />
+                </Route>
+              }
+              {user && 
+                <Route path="/profile/:id">
+                  <Profile
+                    items={user}
+                    profile={profile}
+                    cantFind="/profile"
+                  />
+                </Route>
+              }
+                <Route>
+                  <p>Sorry this page doesn't exist.</p>
+                </Route>
+              </Switch>
+            </main>
+          </UserContext.Provider>
         </ListingsContext.Provider>
       </BrowserRouter>
     </div>

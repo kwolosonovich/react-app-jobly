@@ -1,19 +1,7 @@
 import React, { useState } from "react";
 
-/** Search widget.
- *
- * Appears on CompanyList and JobList so that these can be filtered
- * down.
- *
- * This component doesn't *do* the searching, but it renders the search
- * form and calls the `searchFor` function prop that runs in a parent to do the
- * searching.
- *
- * { CompanyList, JobList } -> SearchForm
- */
 
 function Search({ searchFor }) {
-//   console.debug("SearchForm", "searchFor=", typeof searchFor);
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -31,7 +19,7 @@ function Search({ searchFor }) {
   }
 
   return (
-    <div className="SearchForm mb-4">
+    <div className="Search mb-4">
       <form className="form-inline" onSubmit={handleSubmit}>
         <input
           className="form-control form-control-lg flex-grow-1"

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Container, Card, CardContent, CardHeader } from "@material-ui/core";
 import ListingsContext from "../ListingsContext";
 import Job from "./Job"
+import Search from "./Search"
 
 
 function JobListing({ jobs, name, cantFind }) {
@@ -22,6 +23,8 @@ function JobListing({ jobs, name, cantFind }) {
       <Card>
         <CardHeader />
         Jobs
+
+        <Search />
         <CardContent>
           {showJobs.map((j) => (
             <Job

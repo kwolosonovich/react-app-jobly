@@ -6,7 +6,8 @@ import Job from "./Job"
 
 
 function JobList() {
-  console.debug("JobList");
+
+  let dev = true
 
   const [jobs, setJobs] = useState(null);
 
@@ -16,14 +17,18 @@ function JobList() {
   }, []);
 
   /** Triggered by search form submit; reloads jobs. */
-  async function search({title}) {
-    let jobs = await JoblyApi.getJobs(title);
-    setJobs(jobs);
-  }
+ 
+    async function search({title}) {
+      if (!dev) {
+        let jobs = await JoblyApi.getJobs(title);
+        setJobs(jobs);
+      }
+    }
+  
 
   return (
     <div className="JobList col-md-8 offset-md-2">
-      <Search searchFor={search} />
+      <Search />
       {jobs.length ? (
         <Job jobs={jobs} />
       ) : (

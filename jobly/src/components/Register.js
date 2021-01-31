@@ -3,18 +3,12 @@ import ReactDOM from "react-dom";
 import { useParams, useHistory } from "react-router-dom";
 import { Container, Card, CardContent, CardHeader } from "@material-ui/core";
 import ListingsContext from "../ListingsContext";
-import { MDCTextFieldIcon } from "@material/textfield/icon";
-import { MDCTextField } from "@material/textfield";
-
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
+
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -35,39 +29,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Register({ signup }) {
+function Register({ register }) {
   const classes = useStyles();
 
-    const history = useHistory();
-    const [formData, setFormData] = useState({
-      username: "",
-      password: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-    });
-    const [formErrors, setFormErrors] = useState([]);
+  const history = useHistory();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
+  const [formErrors, setFormErrors] = useState([]);
 
-    async function handleSubmit(evt) {
-            console.log(
-              "********************************at handleChange**************************"
-            );
-
-      evt.preventDefault();
-      let result = await signup(formData);
-      if (result.success) {
-        history.push("/companies");
-      } else {
-        setFormErrors(result.errors);
-      }
+  async function handleSubmit(evt) {
+    evt.preventDefault();
+    let result = await register(formData);
+    if (result.success) {
+      history.push("/companies");
+    } else {
+      setFormErrors(result.errors);
     }
+  }
 
-    /** Update form data field */
-    function handleChange(evt) {
-      const { name, value } = evt.target;
-      setFormData((data) => ({ ...data, [name]: value }));
-    }
-
+  /** Update form data field */
+  function handleChange(evt) {
+    const { name, value } = evt.target;
+    setFormData((data) => ({ ...data, [name]: value }));
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -76,7 +65,7 @@ function Register({ signup }) {
         <Typography component="h1" variant="h5">
           Register
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
