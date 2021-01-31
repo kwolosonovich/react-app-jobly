@@ -41,33 +41,31 @@ function Company({ name, description, num_employees, logo_url, handle }) {
 
   return (
     <div>
-      <Grid item xs={12} md={6}>
-        <CardActionArea component="a" href="#">
-          <Card className={classes.card}>
-            <div className={classes.cardDetails}>
-              <CardContent>
-                <Typography component="h2" variant="h5">
-                  {name}
-                </Typography>
-                <Typography variant="subtitle1" color="textSecondary">
-                  {description}
-                </Typography>
-                <Typography variant="subtitle1" color="textSecondary">
-                  Employees: {num_employees}
-                </Typography>
-                <Typography variant="subtitle1" color="primary">
-                  View open positions
-                </Typography>
-              </CardContent>
-            </div>
-            <div className={classes.cardMedia}>
-              <Hidden xsDown>
-                {logo ? logo : <img src={logo_url} alt={name} />}
-              </Hidden>
-            </div>
-          </Card>
-        </CardActionArea>
-      </Grid>
+      <CardActionArea component="a" href="#">
+        <Card className={classes.card}>
+          <div className={classes.cardDetails}>
+            <CardContent>
+              <Typography component="h2" variant="h5">
+                {name}
+              </Typography>
+              <Typography variant="subtitle1" color="textSecondary">
+                {description}
+              </Typography>
+              <Typography variant="subtitle1" color="textSecondary">
+                Employees: {num_employees}
+              </Typography>
+              <Typography variant="subtitle1" color="primary">
+                View open positions
+              </Typography>
+            </CardContent>
+          </div>
+          <div className={classes.cardMedia}>
+            <Hidden xsDown>
+              {logo ? logo : <img src={logo_url} alt={name} />}
+            </Hidden>
+          </div>
+        </Card>
+      </CardActionArea>
     </div>
   );
 }

@@ -26,36 +26,34 @@ function Job({ id, title, salary, equity, company_handle }) {
 
   return (
     <div>
-      <Grid item xs={12} md={6}>
-        <CardActionArea component="a" href="#">
-          <Card className={classes.card}>
-            <div className={classes.cardDetails}>
-              <CardContent>
-                <Typography variant="subtitle1" color="primary">
-                  {company_handle}
-                </Typography>
-              </CardContent>
-            </div>
-            <div className={classes.cardTitle}>
-              <CardContent>
-                <Typography component="h5" variant="h5">
-                  {title}
-                </Typography>
-              </CardContent>
-            </div>
-            <div className={classes.cardDetails}>
-              <CardContent>
-                <Typography variant="subtitle1" color="textSecondary">
-                  Salary: {salary}
-                </Typography>
-                <Typography variant="subtitle1" color="textSecondary">
-                  Equity: {equity}
-                </Typography>
-              </CardContent>
-            </div>
-          </Card>
-        </CardActionArea>
-      </Grid>
+      <CardActionArea component="a" href="#">
+        <Card className={classes.card}>
+          <div className={classes.cardDetails}>
+            <CardContent>
+              <Typography variant="subtitle1" color="primary">
+                {company_handle}
+              </Typography>
+            </CardContent>
+          </div>
+          <div className={classes.cardTitle}>
+            <CardContent>
+              <Typography component="h5" variant="h5">
+                {title}
+              </Typography>
+            </CardContent>
+          </div>
+          <div className={classes.cardDetails}>
+            <CardContent>
+              <Typography variant="subtitle1" color="textSecondary">
+                Salary: {salary}
+              </Typography>
+              <Typography variant="subtitle1" color="textSecondary">
+                Equity: {equity}
+              </Typography>
+            </CardContent>
+          </div>
+        </Card>
+      </CardActionArea>
     </div>
 
     // <div className="job">

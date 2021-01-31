@@ -5,16 +5,16 @@ function Jobs({ jobs }) {
 
   return (
     <div className="JobCardList">
-      {jobs.map((job) => (
+      {/* "{jobs.map((job) => (
         <Job
           key={job.id}
-          id={job.id}
           title={job.title}
           salary={job.salary}
           equity={job.equity}
           companyName={job.companyName}
         />
-      ))}
+      ))}" */}
+      "not used - Jobs"
     </div>
   );
 }

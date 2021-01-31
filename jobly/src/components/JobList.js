@@ -4,15 +4,6 @@ import Jobs from "./Jobs";
 import Search from "./Search"
 import Job from "./Job"
 
-/** Show page with list of jobs.
- *
- * On mount, loads jobs from API.
- * Re-loads filtered jobs on submit from search form.
- *
- * JobList -> JobCardList -> JobCard
- *
- * This is routed to at /jobs
- */
 
 function JobList() {
   console.debug("JobList");

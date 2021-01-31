@@ -35,6 +35,8 @@ function App() {
   const [user, setUser] = useState(null);
   // application id state
   const [applicationIds, setApplicationIds] = useState(new Set([]));
+  // information received after request
+  const [infoReceived, setInfoReceived] = useState(false);
 
   // get jobs when list is empty
   useEffect(() => {
@@ -43,18 +45,21 @@ function App() {
     function getJobs() {
       let jobs = [
         {
+          id: 1,
           title: "Insurance underwriter",
           salary: null,
           equity: 0.008,
           company_handle: "hall-davis",
         },
         {
+          id: 2,
           title: "Race relations officer",
           salary: 97000,
           equity: 0.065,
           company_handle: "bauer-gallagher",
         },
         {
+          id: 3,
           title: "Astronomer",
           salary: 143000,
           equity: null,
@@ -111,44 +116,44 @@ function App() {
         console.debug("App useEffect loadUserInfo", "token=", token);
 
         if (dev) {
-          function getCurrentUser() {
+          function getUser() {
             if (token) {
               try {
                 setUser('testUser');
                 setApplicationIds(new Set(user.applications));
               } catch (err) {
                 console.error("App loadUserInfo: problem loading", err);
-                setCurrentUser(null);
+                setUser(null);
               }
             }
-            setInfoLoaded(true);
+            setInfoReceived(true);
           }
-          setInfoLoaded(false);
-          getCurrentUser();
+          setInfoReceived(false);
+          getUser();
         
         } else {
-          async function getCurrentUser() {
-          if (token) {
-            try {
-              let { username } = jwt.decode(token);
-              // put the token on the Api class so it can use it to call the API.
-              JoblyApi.token = token;
-              let user = await JoblyApi.getCurrentUser(username);
-              setUser(user);
-              setApplicationIds(new Set(user.applications));
-            } catch (err) {
-              console.error("App loadUserInfo: problem loading", err);
-              setCurrentUser(null);
+          async function getUser() {
+            if (token) {
+              try {
+                let { username } = jwt.decode(token);
+                // put the token on the Api class so it can use it to call the API.
+                JoblyApi.token = token;
+                let user = await JoblyApi.getCurrentUser(username);
+                setUser(user);
+                setApplicationIds(new Set(user.applications));
+              } catch (err) {
+                console.error("App loadUserInfo: problem loading", err);
+                setUser(null);
+              }
             }
+            setInfoReceived(true);
           }
-          setInfoLoaded(true);
-        }
 
         // set infoLoaded to false while async getCurrentUser runs; once the
         // data is fetched (or even if an error happens!), this will be set back
         // to false to control the spinner.
-        setInfoLoaded(false);
-        getCurrentUser();
+        setInfoReceived(false);
+        getUser();
         }
       },
       [token]
@@ -156,9 +161,10 @@ function App() {
 
   // login returning user
   function login(loginData) {
-    if (dev) {
-      setToken('testToken'),
+    if (dev && loginData) {
+      setToken("testToken");
       setActive('true')
+      return { success: true };
     } else {
       async function login(loginData) {
         try {
@@ -170,18 +176,19 @@ function App() {
           return { success: false, errors };
         }
       }
+      login();
     }
   }
 
   // register new user 
   function register(registerData) {
-    if (dev) {
-      setToken('testToken')
+    if (dev && registerData) {
+      setToken("testToken");
       return { success: true };
     } else {
-      async function reg(signupData) {
+      async function reg(registerData) {
         try {
-          let token = await JoblyApi.signup(signupData);
+          let token = await JoblyApi.signup(registerData);
           setToken(token);
           return { success: true };
         } catch (errors) {
@@ -189,12 +196,12 @@ function App() {
           return { success: false, errors };
         }
       }
-      reg(registerData)
+      reg(registerData);
     }
   }
 
   function logout() {
-    setCurrentUser(null);
+    setUser(null);
     setToken(null);
   }
 

@@ -25,8 +25,8 @@ function JobListing({ jobs, name, cantFind }) {
         <CardContent>
           {showJobs.map((j) => (
             <Job
-              key={j.id}
               id={j.id}
+              key={j.id}
               title={j.title}
               salary={j.salary}
               equity={j.equity}
