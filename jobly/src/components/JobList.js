@@ -25,7 +25,7 @@ function JobList() {
   }, []);
 
   /** Triggered by search form submit; reloads jobs. */
-  async function search(title) {
+  async function search({title}) {
     let jobs = await JoblyApi.getJobs(title);
     setJobs(jobs);
   }

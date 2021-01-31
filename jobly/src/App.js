@@ -34,29 +34,30 @@ function App() {
   const [applicationIds, setApplicationIds] = useState(new Set([]));
 
 
-
   // get jobs when list is empty
   useEffect(() => {
     // async function getJobs() {
-    //   let jobs = await JoblyApi.getJobs();
+      // let jobs = await JoblyApi.getJobs();
     function getJobs() {
-      let jobs = [1, 2, 3, 4];
-      console.log(jobs);
+      let jobs = [
+        {
+          title: 'Insurance underwriter', 
+          salary: null,
+          equity: 0.008, 
+          company_handle: 'hall-davis',
+        },
+        {
+          title: 'Race relations officer', 
+          salary: 97000, 
+          equity: 0.065, 
+          company_handle: 'bauer-gallagher',
+        }]
       setJobs(jobs);
-    }
+    }    
     getJobs();
   }, []);
 
-  // get companies when list is empty
-  useEffect(() => {
-    async function getCompanies() {
-      let companies = await JoblyApi.getCompanies();
-      // let companies = ["a", "b", "c"];
-      console.log(companies);
-      setCompanies(companies);
-    }
-    getCompanies();
-  }, []);
+  
 
   // useEffect(() => {
   //   async function getCompany() {
@@ -67,58 +68,7 @@ function App() {
   //   getCompany();
   // }, []);
 
-  // get user status
-  useEffect(function loadUserInfo() {
-    async function getUser() {
-      if (token) {
-        try {
-          let {username} = jwt.decode(token)
-          JoblyApi.token = token;
-          let user = await JoblyApi.getCurrentUser(username);
-          setUser(user);
-          setApplicationIds(new Set(user.applications));
-        } catch(err) {
-          setUser(null);
-        }
-      }
-      setActive(true)
-    }
-    getUser()
-  }, [token]);
-
-  // get jobs from api if list is empty
-  useEffect(function getAllJobsOnMount() {
-    console.debug("JobList useEffect getAllJobsOnMount");
-    search();
-  }, []);
-
-  async function search(title) {
-    let jobs = await JoblyApi.getJobs(title);
-    setJobs(jobs);
-  }
-
-  async function register(data) {
-    try {
-      let token = await JoblyApi.signup(data);
-      console.log(data)
-      setToken(token)
-    } catch (errors) {
-      console.error("signup failed", errors);
-      return { success: false, errors };
-    }
-  }
-
-  async function login(data) {
-    try {
-      let token = await JoblyApi.login(data);
-      console.log(login)
-      // setToken(token);
-      return { success: true };
-    } catch (errors) {
-      console.error("login failed", errors);
-      return { success: false, errors };
-    }
-  }
+  
 
   return (
     <div className="App">
@@ -231,3 +181,22 @@ function App() {
 }
 
 export default App;
+
+
+// users
+//  { 
+//         username: 'testuser',
+//         password: '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+//         first_name: 'Test',
+//         last_name: 'User',
+//         email: 'joel@joelburton.com',
+//         is_admin: FALSE
+//       },
+//       {
+//         username: 'testadmin',
+//         password: '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
+//         first_name: 'Test',
+//         last_name: 'Admin!',
+//         email: 'joel@joelburton.com',
+//         is_admin: TRUE
+//       }

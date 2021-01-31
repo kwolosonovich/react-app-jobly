@@ -5,7 +5,7 @@ import { Container, Card, CardContent, CardHeader } from "@material-ui/core";
 import ListingsContext from "../ListingsContext";
 
 
-function CompanyListing ({ name }) {
+function CompanyListing ( companies ) {
 
   // const [companies, setCompanies] = useState([]);
 
