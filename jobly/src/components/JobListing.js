@@ -3,27 +3,17 @@ import ReactDOM from "react-dom";
 import { useParams } from "react-router-dom";
 import { Container, Card, CardContent, CardHeader } from "@material-ui/core";
 import ListingsContext from "../ListingsContext";
+import Job from "./Job"
 
 
-function JobListing({ name }) {
-
-  // const [jobs, setJobs] = useState([]);
+function JobListing({ jobs, name, cantFind }) {
 
   let getContext = useContext(ListingsContext);
-  let listing = getContext[name];
+  let showJobs = getContext[name];
 
-  // useEffect(() => {
-  //   // async function getJobs() {
-  //   //   let jobs = await JoblyApi.getJobs();
-  //   function getJobs() {
-  //     let jobs = [1, 2, 3, 4];
-  //     console.log(jobs);
-  //     setJobs(jobs);
-  //   }
-  //   getJobs();
-  // }, []);
+  console.log(showJobs)
 
-  if (!listing) {
+  if (!jobs) {
     return <h1>"Sorry, no current job listings found."</h1>;
   }
 
@@ -33,8 +23,15 @@ function JobListing({ name }) {
         <CardHeader />
         Jobs
         <CardContent>
-          {listing.map((job) => (
-            <h1>{ job }</h1>
+          {showJobs.map((j) => (
+            <Job
+              key={j.id}
+              id={j.id}
+              title={j.title}
+              salary={j.salary}
+              equity={j.equity}
+              company_handle={j.company_handle}
+            ></Job>
           ))}
         </CardContent>
       </Card>

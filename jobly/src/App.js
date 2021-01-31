@@ -27,37 +27,74 @@ function App() {
   // active user state
   const [active, setActive] = useState(false);
   // api token
-  const [token, setToken] = useState(null)
+  const [token, setToken] = useState(null);
   // user state
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
   // application id state
   const [applicationIds, setApplicationIds] = useState(new Set([]));
-
 
   // get jobs when list is empty
   useEffect(() => {
     // async function getJobs() {
-      // let jobs = await JoblyApi.getJobs();
+    // let jobs = await JoblyApi.getJobs();
     function getJobs() {
       let jobs = [
         {
-          title: 'Insurance underwriter', 
+          title: "Insurance underwriter",
           salary: null,
-          equity: 0.008, 
-          company_handle: 'hall-davis',
+          equity: 0.008,
+          company_handle: "hall-davis",
         },
         {
-          title: 'Race relations officer', 
-          salary: 97000, 
-          equity: 0.065, 
-          company_handle: 'bauer-gallagher',
-        }]
+          title: "Race relations officer",
+          salary: 97000,
+          equity: 0.065,
+          company_handle: "bauer-gallagher",
+        },
+        {
+          title: "Astronomer",
+          salary: 143000,
+          equity: null,
+          company_handle: "watson-davis",
+        },
+      ];
       setJobs(jobs);
-    }    
+    }
     getJobs();
   }, []);
 
-  
+  // get companies when list is empty
+  useEffect(() => {
+    // async function getCompanies() {
+      // let companies = await JoblyApi.getCompanies();
+    function getCompanies() {
+      let companies = [
+        {
+          handle: "bauer-gallagher",
+          name: "Bauer-Gallagher",
+          num_employees: 862,
+          description: "Difficult ready trip question produce produce someone.",
+          logo_url: 'Logo1'
+        },
+        {
+          handle: "hall-davis",
+          name: "Hall-Davis",
+          num_employees: 749,
+          description: "Adult go economic off into. Suddenly happy according only common. Father plant wrong free traditional.",
+          logo_url: 'Logo2'
+        },
+        {
+          handle: "watson-davis",
+          name: "Watson-Davis",
+          num_employees: 819,
+          description: "Year join loss.",
+          logo_url: 'Logo3'
+        },
+      ];
+      setCompanies(companies);
+    }
+    getCompanies();
+  }, []);
 
   // useEffect(() => {
   //   async function getCompany() {
@@ -67,8 +104,6 @@ function App() {
   //   }
   //   getCompany();
   // }, []);
-
-  
 
   return (
     <div className="App">
@@ -100,16 +135,18 @@ function App() {
               </Route>
 
               <Route exact path="/profile">
-              <Profile 
-                name="profile" 
-                // profile={profile} 
-                title="Profile" />
-            </Route>
+                <Profile
+                  name="profile"
+                  // profile={profile}
+                  title="Profile"
+                />
+              </Route>
               <Route path="/profile/:id">
-                  <Profile 
-                    // items={profile} 
-                    cantFind="/profile" />
-                </Route>
+                <Profile
+                  // items={profile}
+                  cantFind="/profile"
+                />
+              </Route>
 
               <Route exact path="/login">
                 <Login
@@ -127,10 +164,11 @@ function App() {
               </Route>
 
               <Route exact path="/profile">
-                <Profile 
-                  name="profile" 
-                  // profile={profile} 
-                  title="profile" />
+                <Profile
+                  name="profile"
+                  // profile={profile}
+                  title="profile"
+                />
               </Route>
               <Route path="/profile">
                 <Profile
@@ -140,20 +178,20 @@ function App() {
                 />
               </Route>
 
-              <Route exact path="/register">
+              {/* <Route exact path="/register">
                 <Register
                   name="register"
                   register={register}
                   title="Register"
                 />
-              </Route>
-              <Route path="/register">
+              </Route> */}
+              {/* <Route path="/register">
                 <Register
                   // items={login}
                   register={register}
                   cantFind="/register"
                 />
-              </Route>
+              </Route> */}
 
               <Route exact path="/logout">
                 <Logout
@@ -168,10 +206,10 @@ function App() {
                   cantFind="/logout"
                 />
               </Route>
-              
-            <Route>
-              <p>Sorry this page doesn't exist.</p>
-            </Route>
+
+              <Route>
+                <p>Sorry this page doesn't exist.</p>
+              </Route>
             </Switch>
           </main>
         </ListingsContext.Provider>
