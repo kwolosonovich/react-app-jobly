@@ -20,6 +20,9 @@ import JobListing from "./components/JobListing"
  
 
 function App() {
+
+  // development state
+  const [dev, setDev] = useState(true)
   // job state
   const [jobs, setJobs] = useState([]);
   // company state
@@ -65,45 +68,135 @@ function App() {
 
   // get companies when list is empty
   useEffect(() => {
-    // async function getCompanies() {
-      // let companies = await JoblyApi.getCompanies();
-    function getCompanies() {
-      let companies = [
-        {
-          handle: "bauer-gallagher",
-          name: "Bauer-Gallagher",
-          num_employees: 862,
-          description: "Difficult ready trip question produce produce someone.",
-          logo_url: 'Logo1'
-        },
-        {
-          handle: "hall-davis",
-          name: "Hall-Davis",
-          num_employees: 749,
-          description: "Adult go economic off into. Suddenly happy according only common. Father plant wrong free traditional.",
-          logo_url: 'Logo2'
-        },
-        {
-          handle: "watson-davis",
-          name: "Watson-Davis",
-          num_employees: 819,
-          description: "Year join loss.",
-          logo_url: 'Logo3'
-        },
-      ];
-      setCompanies(companies);
+    if (dev) {
+      function getCompanies() {
+        let companies = [
+          {
+            handle: "bauer-gallagher",
+            name: "Bauer-Gallagher",
+            num_employees: 862,
+            description: "Difficult ready trip question produce produce someone.",
+            logo_url: "Logo1",
+          },
+          {
+            handle: "hall-davis",
+            name: "Hall-Davis",
+            num_employees: 749,
+            description:
+              "Adult go economic off into. Suddenly happy according only common. Father plant wrong free traditional.",
+            logo_url: "Logo2",
+          },
+          {
+            handle: "watson-davis",
+            name: "Watson-Davis",
+            num_employees: 819,
+            description: "Year join loss.",
+            logo_url: "Logo3",
+          },
+        ];
+        setCompanies(companies);
+      }
+      getCompanies();
+    } else {
+      async function getCompanies() {
+        let companies = await JoblyApi.getCompanies();
+        setCompanies(companies);
+      }
     }
-    getCompanies();
   }, []);
 
-  // useEffect(() => {
-  //   async function getCompany() {
-  //     let res = await this.request(`companies/${handle}`);
-  //     console.log(res);
-  //     setCompanies(res);
-  //   }
-  //   getCompany();
-  // }, []);
+  // update setUser, setActive, setToken upon login and logout
+    useEffect(
+      function loadUserInfo() {
+        console.debug("App useEffect loadUserInfo", "token=", token);
+
+        if (dev) {
+          function getCurrentUser() {
+            if (token) {
+              try {
+                setUser('testUser');
+                setApplicationIds(new Set(user.applications));
+              } catch (err) {
+                console.error("App loadUserInfo: problem loading", err);
+                setCurrentUser(null);
+              }
+            }
+            setInfoLoaded(true);
+          }
+          setInfoLoaded(false);
+          getCurrentUser();
+        
+        } else {
+          async function getCurrentUser() {
+          if (token) {
+            try {
+              let { username } = jwt.decode(token);
+              // put the token on the Api class so it can use it to call the API.
+              JoblyApi.token = token;
+              let user = await JoblyApi.getCurrentUser(username);
+              setUser(user);
+              setApplicationIds(new Set(user.applications));
+            } catch (err) {
+              console.error("App loadUserInfo: problem loading", err);
+              setCurrentUser(null);
+            }
+          }
+          setInfoLoaded(true);
+        }
+
+        // set infoLoaded to false while async getCurrentUser runs; once the
+        // data is fetched (or even if an error happens!), this will be set back
+        // to false to control the spinner.
+        setInfoLoaded(false);
+        getCurrentUser();
+        }
+      },
+      [token]
+    );
+
+  // login returning user
+  function login(loginData) {
+    if (dev) {
+      setToken('testToken'),
+      setActive('true')
+    } else {
+      async function login(loginData) {
+        try {
+           let token = await JoblyApi.login(loginData);
+          setToken(token);
+          return { success: true };
+        } catch (errors) {
+          console.error("login failed", errors);
+          return { success: false, errors };
+        }
+      }
+    }
+  }
+
+  // register new user 
+  function register(registerData) {
+    if (dev) {
+      setToken('testToken')
+      return { success: true };
+    } else {
+      async function reg(signupData) {
+        try {
+          let token = await JoblyApi.signup(signupData);
+          setToken(token);
+          return { success: true };
+        } catch (errors) {
+          console.error("signup failed", errors);
+          return { success: false, errors };
+        }
+      }
+      reg(registerData)
+    }
+  }
+
+  function logout() {
+    setCurrentUser(null);
+    setToken(null);
+  }
 
   return (
     <div className="App">
@@ -149,18 +242,10 @@ function App() {
               </Route>
 
               <Route exact path="/login">
-                <Login
-                  name="login"
-                  // login={login}
-                  title="Login"
-                />
+                <Login name="login" login={login} title="Login" />
               </Route>
               <Route path="/login/:id">
-                <Form
-                  // items={login}
-                  // login={login}
-                  cantFind="/login"
-                />
+                <Form items={login} login={login} cantFind="/login" />
               </Route>
 
               <Route exact path="/profile">
@@ -178,31 +263,31 @@ function App() {
                 />
               </Route>
 
-              {/* <Route exact path="/register">
+              <Route exact path="/register">
                 <Register
                   name="register"
                   register={register}
                   title="Register"
                 />
-              </Route> */}
-              {/* <Route path="/register">
+              </Route>
+              <Route path="/register">
                 <Register
-                  // items={login}
+                  items={login}
                   register={register}
                   cantFind="/register"
                 />
-              </Route> */}
+              </Route>
 
               <Route exact path="/logout">
                 <Logout
                   name="logout"
-                  // logout={logout}
+                  logout={logout}
                   title="Logout"
                 />
               </Route>
               <Route path="/logout/:id">
                 <Logout
-                  // items={logout}
+                  items={logout}
                   cantFind="/logout"
                 />
               </Route>
@@ -220,21 +305,3 @@ function App() {
 
 export default App;
 
-
-// users
-//  { 
-//         username: 'testuser',
-//         password: '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
-//         first_name: 'Test',
-//         last_name: 'User',
-//         email: 'joel@joelburton.com',
-//         is_admin: FALSE
-//       },
-//       {
-//         username: 'testadmin',
-//         password: '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
-//         first_name: 'Test',
-//         last_name: 'Admin!',
-//         email: 'joel@joelburton.com',
-//         is_admin: TRUE
-//       }
