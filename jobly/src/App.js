@@ -273,7 +273,7 @@ function App() {
                 <Route path="/profile/:id">
                   <Profile
                     items={user}
-                    profile={profile}
+                    // profile={profile}
                     cantFind="/profile"
                   />
                 </Route>
