@@ -43,13 +43,11 @@ function Profile({ item }) {
   let dev = true
 
   let getContext = useContext(UserContext);
-  let user = getContext[item];
+  let showUser = getContext[item];
 
-  // console.log(user)
-
-  //  const { user, setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
    
-   const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
      firstName: user.firstName,
      lastName: user.lastName,
      email: user.email,
