@@ -15,11 +15,12 @@ import Logout from "./components/Logout";
 import Profile from "./components/Profile"
 import UserContext from "./context/UserContext";
 import JobListing from "./components/JobListing"
+import Search from "./components/Search";
  
 
 function App() {
   // development state
-  const [dev, setDev] = useState(true);
+  const [dev, setDev] = useState(null);
   // job state
   const [jobs, setJobs] = useState([]);
   // company state
@@ -35,38 +36,51 @@ function App() {
   // information received after request
   const [infoReceived, setInfoReceived] = useState(false);
 
+  useEffect(function setDevStatus() {
+    setDev(false)
+  }, null)
+
+
   // get jobs when list is empty
-  useEffect(() => {
-    // async function getJobs() {
-    // let jobs = await JoblyApi.getJobs();
-    function getJobs() {
-      let jobs = [
-        {
-          id: 1,
-          title: "Insurance underwriter",
-          salary: null,
-          equity: 0.008,
-          company_handle: "hall-davis",
-        },
-        {
-          id: 2,
-          title: "Race relations officer",
-          salary: 97000,
-          equity: 0.065,
-          company_handle: "bauer-gallagher",
-        },
-        {
-          id: 3,
-          title: "Astronomer",
-          salary: 143000,
-          equity: null,
-          company_handle: "watson-davis",
-        },
-      ];
-      setJobs(jobs);
-    }
-    getJobs();
-  }, []);
+  // useEffect(() => {
+  //   if (dev) {
+  //     function getJobs() {
+  //       let jobs = [
+  //         {
+  //           id: 1,
+  //           title: "Insurance underwriter",
+  //           salary: null,
+  //           equity: 0.008,
+  //           company_handle: "hall-davis",
+  //         },
+  //         {
+  //           id: 2,
+  //           title: "Race relations officer",
+  //           salary: 97000,
+  //           equity: 0.065,
+  //           company_handle: "bauer-gallagher",
+  //         },
+  //         {
+  //           id: 3,
+  //           title: "Astronomer",
+  //           salary: 143000,
+  //           equity: null,
+  //           company_handle: "watson-davis",
+  //         },
+  //       ];
+  //       setJobs(jobs);
+  //     }
+  //   } else {
+  //     async function getJobs(title) {
+  //       let jobs = await JoblyApi.getJobs(title);
+  //       setJobs(jobs)
+  //     }
+  //   }
+  // }, []);
+  async function search(title) {
+    let jobs = await JoblyApi.getJobs(title);
+    setJobs(jobs);
+  }
 
   /** Checks if a job has been applied for. */
   function hasAppliedToJob(id) {
@@ -80,45 +94,57 @@ function App() {
     setApplicationIds(new Set([...applicationIds, id]));
   }
 
+    useEffect(function getCompaniesOnMount() {
+      console.debug("CompanyList useEffect getCompaniesOnMount");
+      search();
+    }, []);
+
+      useEffect(function getAllJobsOnMount() {
+        console.debug("JobList useEffect getAllJobsOnMount");
+        search();
+      }, []);
+
   // get companies when list is empty
-  useEffect(() => {
-    if (dev) {
-      function getCompanies() {
-        let companies = [
-          {
-            handle: "bauer-gallagher",
-            name: "Bauer-Gallagher",
-            num_employees: 862,
-            description:
-              "Difficult ready trip question produce produce someone.",
-            logo_url: "Logo1",
-          },
-          {
-            handle: "hall-davis",
-            name: "Hall-Davis",
-            num_employees: 749,
-            description:
-              "Adult go economic off into. Suddenly happy according only common. Father plant wrong free traditional.",
-            logo_url: "Logo2",
-          },
-          {
-            handle: "watson-davis",
-            name: "Watson-Davis",
-            num_employees: 819,
-            description: "Year join loss.",
-            logo_url: "Logo3",
-          },
-        ];
-        setCompanies(companies);
-      }
-      getCompanies();
-    } else {
-      async function getCompanies() {
-        let companies = await JoblyApi.getCompanies();
-        setCompanies(companies);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (dev) {
+  //     function getCompanies() {
+  //       let companies = [
+  //         {
+  //           handle: "bauer-gallagher",
+  //           name: "Bauer-Gallagher",
+  //           num_employees: 862,
+  //           description:
+  //             "Difficult ready trip question produce produce someone.",
+  //           logo_url: "Logo1",
+  //         },
+  //         {
+  //           handle: "hall-davis",
+  //           name: "Hall-Davis",
+  //           num_employees: 749,
+  //           description:
+  //             "Adult go economic off into. Suddenly happy according only common. Father plant wrong free traditional.",
+  //           logo_url: "Logo2",
+  //         },
+  //         {
+  //           handle: "watson-davis",
+  //           name: "Watson-Davis",
+  //           num_employees: 819,
+  //           description: "Year join loss.",
+  //           logo_url: "Logo3",
+  //         },
+  //       ];
+  //       setCompanies(companies);
+  //     }
+  //     getCompanies();
+  //   } else {
+  //     async function getCompanies(name) {
+  //       let companies = await JoblyApi.getCompanies(name);
+  //       setCompanies(companies);
+  //     }
+  //     getCompanies();
+  //   }
+  //   Search();
+  // }, []);
 
   // update setUser, setActive, setToken upon login and logout
   useEffect(
@@ -227,7 +253,8 @@ function App() {
                 <Route path="/jobs/:id">
                   <JobListing items={jobs} cantFind="/jobs" />
                 </Route>
-                <Route exact path="/companies">
+                <Route exact path="/companies
+                +">
                   <CompanyListing
                     name="companies"
                     companies={companies}
@@ -241,43 +268,39 @@ function App() {
                 <Route exact path="/login">
                   <Login name="login" login={login} title="Login" />
                 </Route>
-              {!user &&             
-                <Route exact path="/logout">
-                  <Logout
-                    name="logout"
-                    logout={logout}
-                    title="Logout"
-                    cantFind="/"
-                  />
-                </Route>
-              }
-              {!user &&       
-                <Route exact path="/register">
-                  <Register
-                    name="register"
-                    register={register}
-                    title="Register"
-                  />
-                </Route> 
-              }
-              {user &&   
-                <Route exact path="/profile">
-                  <Profile
-                    name="profile"
-                    items={user}
-                    title="profile"
-                  />
-                </Route>
-              }
-              {user && 
-                <Route path="/profile/:id">
-                  <Profile
-                    items={user}
-                    // profile={profile}
-                    cantFind="/profile"
-                  />
-                </Route>
-              }
+                {!user && (
+                  <Route exact path="/logout">
+                    <Logout
+                      name="logout"
+                      logout={logout}
+                      title="Logout"
+                      cantFind="/"
+                    />
+                  </Route>
+                )}
+                {!user && (
+                  <Route exact path="/register">
+                    <Register
+                      name="register"
+                      register={register}
+                      title="Register"
+                    />
+                  </Route>
+                )}
+                {user && (
+                  <Route exact path="/profile">
+                    <Profile name="profile" items={user} title="profile" />
+                  </Route>
+                )}
+                {user && (
+                  <Route path="/profile/:id">
+                    <Profile
+                      items={user}
+                      // profile={profile}
+                      cantFind="/profile"
+                    />
+                  </Route>
+                )}
                 <Route>
                   <p>Sorry this page doesn't exist.</p>
                 </Route>

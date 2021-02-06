@@ -40,8 +40,6 @@ const useStyles = makeStyles((theme) => ({
 function Profile({ item }) {
   const classes = useStyles();
   
-  let dev = true
-
   let getContext = useContext(UserContext);
   let showUser = getContext[item];
 
@@ -72,15 +70,13 @@ function Profile({ item }) {
      let username = formData.username;
      let updatedUser;
 
-     if (!dev) {
       try {
         updatedUser = await JoblyApi.saveProfile(username, profileData);
       } catch (errors) {
-        debugger;
         setFormErrors(errors);
         return;
       }
-     }
+
 
      setFormData((f) => ({ ...f, password: "" }));
      setFormErrors([]);

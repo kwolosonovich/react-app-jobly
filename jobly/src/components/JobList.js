@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import JoblyApi from "../JoblyApi";
-import Jobs from "./Jobs";
 import Search from "./Search"
 import Job from "./Job"
 
 
 function JobList() {
-
-  let dev = true
 
   const [jobs, setJobs] = useState(null);
 
@@ -18,12 +15,10 @@ function JobList() {
 
   /** Triggered by search form submit; reloads jobs. */
  
-    async function search({title}) {
-      if (!dev) {
-        let jobs = await JoblyApi.getJobs(title);
-        setJobs(jobs);
-      }
-    }
+  async function search({title}) {
+    let jobs = await JoblyApi.getJobs(title);
+    setJobs(jobs);
+  }
   
 
   return (

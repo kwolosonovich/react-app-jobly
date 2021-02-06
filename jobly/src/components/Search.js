@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 
-function Search({ searchFor }) {
+function SearchForm({ searchFor }) {
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -36,4 +36,4 @@ function Search({ searchFor }) {
   );
 }
 
-export default Search;
+export default SearchForm;

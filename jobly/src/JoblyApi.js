@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
+const BASE_URL = process.env.REACT_APP_BASE_URL || "http://127.00.1:3001";
 
 /** API Class.
  *
@@ -34,28 +34,58 @@ class JoblyApi {
 
   /** Get details on a company by handle. */
 
-  static async getCompany(handle) {
-    let res = await this.request(`companies/${handle}`);
-    return res.company;
+  static async getCurrentUser(username) {
+    let res = await this.request(`users/${username}`);
+    return res.user;
   }
 
-  // get jobs by title
+  /** Get companies (filtered by name if not undefined) */
+
+  static async getCompanies(name) {
+    let res = await this.request("companies", { name });
+    return res.companies;
+  }
+
+  /** Get details on a company by handle. */
+
+  static async getCompany(handle) {
+    let res = await this.request(`companies/${handle}`);
+    return res.companies;
+  }
+
+  /** Get list of jobs (filtered by title if not undefined) */
+
   static async getJobs(title) {
     let res = await this.request("jobs", { title });
     return res.jobs;
   }
 
-  static async getCompanies() {
-    let res = await this.request(`companies`);
-    return res.company;
+  /** Apply to a job */
+
+  static async applyToJob(username, id) {
+    await this.request(`users/${username}/jobs/${id}`, {}, "post");
   }
+
+  /** Get token for login from username, password. */
+
+  static async login(data) {
+    let res = await this.request(`auth/token`, data, "post");
+    return res.token;
+  }
+
+  /** Signup for site. */
 
   static async signup(data) {
     let res = await this.request(`auth/register`, data, "post");
     return res.token;
   }
 
-  // obviously, you'll add a lot here ...
+  /** Save user profile page. */
+
+  static async saveProfile(username, data) {
+    let res = await this.request(`users/${username}`, data, "patch");
+    return res.user;
+  }
 }
 
 // for now, put token ("testuser" / "password" on class)
